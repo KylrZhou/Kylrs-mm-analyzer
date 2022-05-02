@@ -8,10 +8,13 @@ def plotplot(data_dict):
         if i == 'epoch' or i == 'iter':
             x = data_dict[i]
             ax.set_xlabel(i)
-        else:
-            y = data_dict[i]
-            ax.set_ylabel(i)
-
-    ax.scatter(x, y)
+    try:
+        data_dict.pop('epoch')
+    except:
+        data_dict.pop('iter')
+    key_list = data_dict.keys()
+    for i in key_list:
+        ax.scatter(x, data_dict[i], label = i)
+    ax.legend()
     plt.show()
     return

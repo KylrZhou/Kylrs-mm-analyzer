@@ -2,7 +2,7 @@ from itertools import islice
 import numpy as np
 global null
 null = None
-def Analyze(workdir):
+def Analyze(workdir, filename):
     f = open(workdir, 'r')
     stat_pointer = 0
     train_key = dict()
@@ -28,11 +28,12 @@ def Analyze(workdir):
         else:
             stat_pointer += 1
     data_dict = dict()
-    data_dict = Input_Var(f, train_key, val_key)
+    data_dict = Input_Var(f, train_key, val_key, filename)
     f.close()
+    print(":::~DATA LOADED~:::")
     return data_dict
 
-def Input_Var(f, train_key, val_key):
+def Input_Var(f, train_key, val_key, filename):
     f.seek(0,0)
     train_verse = dict()
     val_verse = dict()
@@ -200,12 +201,23 @@ def Input_Var(f, train_key, val_key):
                     for i in key_list:
                         data_dict[i].append(line[i])
 
-        #key_list = data_dict.keys()
-        #fstline = f.readline()
-
+        key_list = data_dict.keys()
+        counts = 0
+        for i in filename:
+            if i == '.':
+                break
+            else:
+                counts += 1
+        filename = filename[0:counts]
+        counts = []
         for i in key_list:
-            data_dict[i] = np.array(data_dict[i])
-        print(":::~DATA LOADED~:::")
+            if i != 'iter' and i != 'epoch':
+                counts.append(i)
+            else:
+                data_dict[i] = np.array(data_dict[i])
+        for i in counts:
+            tmp = '['+filename+']'+' '+i
+            data_dict[tmp] = data_dict.pop(i)
         return data_dict
 
 
