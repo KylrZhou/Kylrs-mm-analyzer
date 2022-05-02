@@ -1,4 +1,3 @@
-from default_conf import plotplot
 from itertools import islice
 import numpy as np
 global null
@@ -28,9 +27,10 @@ def Analyze(workdir):
             break
         else:
             stat_pointer += 1
-    Input_Var(f, train_key, val_key)
+    data_dict = dict()
+    data_dict = Input_Var(f, train_key, val_key)
     f.close()
-    return
+    return data_dict
 
 def Input_Var(f, train_key, val_key):
     f.seek(0,0)
@@ -142,63 +142,71 @@ def Input_Var(f, train_key, val_key):
             ax_y = train_key[ax_y]
             data_dict[ax_x] = []
             data_dict[ax_y] = []
+            key_list = data_dict.keys()
+            fstline = f.readline()
+            if epc_itr == 'epoch':
+                sndline = f.readline()
+                sndline = eval(sndline)
+                for i in key_list:
+                    data_dict[i].append(sndline[i])
+                eph = 0
+                counts = 1
+                for line in f:
+                    line = eval(line)
+                    if line['mode'] == MODE:
+                        if line['epoch']-1 == eph:
+                            counts += 1
+                            for i in key_list:
+                                data_dict[i][eph] += line[i]
+                        else:
+                            for i in key_list:
+                                data_dict[i][eph] /= counts
+                                data_dict[i][eph] = round(data_dict[i][eph], 5)
+                                data_dict[i].append(line[i])
+                            eph += 1
+                            counts = 1
+                for i in key_list:
+                    data_dict[i][eph] /= counts
+                    data_dict[i][eph] = round(data_dict[i][eph], 5)
+            elif epc_itr == 'iter':
+                counts = 0
+                key_list = list(key_list)
+                for i in key_list:
+                    if i == 'iter':
+                        break
+                    else:
+                        counts += 1
+                key_list.pop(counts)
+                counts = 1
+                for line in f:
+                    line = eval(line)
+                    if line['mode'] == MODE:
+                        for i in key_list:
+                            data_dict[i].append(line[i])
+                        data_dict['iter'].append(round(counts, 5))
+                        counts += 1
         elif ax_x in val_key.keys():
             MODE = 'val'
             ax_x = val_key[ax_x]
             ax_y = val_key[ax_y]
             data_dict[ax_x] = []
             data_dict[ax_y] = []
-
-        key_list = data_dict.keys()
-        fstline = f.readline()
-
-        if epc_itr == 'epoch':
-            sndline = f.readline()
-            sndline = eval(sndline)
-            for i in key_list:
-                data_dict[i].append(sndline[i])
-            eph = 0
-            counts = 1
-            for line in f:
-                line = eval(line)
-                if line['mode'] == MODE:
-                    if line['epoch']-1 == eph:
-                        counts += 1
-                        for i in key_list:
-                            data_dict[i][eph] += line[i]
-                    else:
-                        for i in key_list:
-                            data_dict[i][eph] /= counts
-                            data_dict[i][eph] = round(data_dict[i][eph], 5)
-                            data_dict[i].append(line[i])
-                        eph += 1
-                        counts = 1
-            for i in key_list:
-                data_dict[i][eph] /= counts
-                data_dict[i][eph] = round(data_dict[i][eph], 5)
-        elif epc_itr == 'iter':
+            key_list = data_dict.keys()
             counts = 0
-            key_list = list(key_list)
-            for i in key_list:
-                if i == 'iter':
-                    break
-                else:
-                    counts += 1
-            key_list.pop(counts)
-            counts = 1
+            fstline = f.readline()
             for line in f:
                 line = eval(line)
                 if line['mode'] == MODE:
                     for i in key_list:
                         data_dict[i].append(line[i])
-                    data_dict['iter'].append(round(counts, 5))
-                    counts += 1
+
+        #key_list = data_dict.keys()
+        #fstline = f.readline()
+
         for i in key_list:
             data_dict[i] = np.array(data_dict[i])
-        print(data_dict)
-        print("matplotlib Plotting")
-        plotplot(data_dict)
-        #plot_gene()
+        print(":::~DATA LOADED~:::")
+        return data_dict
 
 
 
