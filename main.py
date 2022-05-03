@@ -7,16 +7,42 @@ from os.path import exists
 import os
 def clear():
     os.system('clear')
+def set_workdir():
+    if exists('workdir.txt'):
+        f = open('workdir.txt','w+')
+        workdir = f.readline()
+        f.seek(0,0)
+        if workdir != '':
+            print("Original Workdir is <",workdir,'>',sep = '')
+        else:
+            print("No Default Workdir")
+    else:
+        f = open('workdir.txt','w+')
+        print("No Default Workdir")
+    print("Input Your Workdir:")
+    print(">>> ",end = '')
+    workdir = input()
+    if workdir != '':
+        workdir = workdir + '/'
+        f.write(workdir)
+        print("Default Workdir Have Set to <",workdir,'>', sep = '')
+    f.close()
+    return workdir
+
 clear()
 Logo()
-workdir = "/home/kylrzhou/Documents/ExperimentResults"
-homedir = '/home/kylrzhou'
+#workdir = "/home/kylrzhou/Documents/ExperimentResults"
 data_dict = dict()
 tmp_dict = dict()
 print("")
-print("<", workdir, ">")
+try:
+    f = open('workdir.txt','r')
+    workdir = f.readline()
+except:
+    workdir = set_workdir()
+print("<", workdir[0:-1], ">")
 print("  Enter:")
-print("    ~ !D to Change Your Default Workd Dir")
+print("    ~ !D to Change Default Work Dir")
 print("    ~ !S to Enter Setting Mode")
 print("    ~ !A to Start Analyze Mode")
 print("    ~ #X to Exit")
@@ -24,7 +50,8 @@ Fpath = input()
 while Fpath != "#X":
     if Fpath == "!D":
         print("Directory Changing")
-
+        set_workdir()
+        continue
     elif Fpath == "!S":
         print("Setting Mode Started")
 
