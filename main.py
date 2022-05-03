@@ -1,7 +1,7 @@
 from Logo import Paint_Logo
 from Analyzer import Analyze
 from default_conf import plotplot
-from Concat_func import Concat
+from Setting_plt import Set_printer
 from os import listdir, access
 from os.path import exists
 import os
@@ -27,7 +27,7 @@ while Fpath != "#X":
 
     elif Fpath == "!A":
         print("Input the Serial Number or Address of the JSON File to Be Analyzed")
-        while Fpath != "#X":
+        while Fpath != "#X" and Fpath != "!S":
             filels = listdir(workdir)
             for i in range(len(filels)):
                 print(i+1, ")", ' ', filels[i], sep = '', end = '    ')
@@ -48,14 +48,27 @@ while Fpath != "#X":
                         print("Given File Does Not Accessable, Input Again:")
                         continue
                 break
-            tmp_dict = Analyze(Fpath, filename)      #if the same file name exists in and out of the default path, we will process the one in the default pass first.
-            data_dict = Concat(data_dict, tmp_dict)
+            counts = 0
+            for i in filename:
+                if i == '.':
+                    break
+                else:
+                    counts += 1
+            filename = filename[0:counts]
+            tmp_dict = Analyze(Fpath)      #if the same file name exists in and out of the default path, we will process the one in the default pass first.
+            #data_dict = Concat(data_dict, tmp_dict)
+            data_dict[filename] = tmp_dict
             tmp_dict = dict()
-            print("Enter Any Character to Add More Data Or Use Command <#X> to Plot Selected Data:",end='')
+            print("Enter Any Character to Add Data Or Use Command <#X> to Plot Selected Data Or Use Command <!S> to Set Matplotlib Attributes:  ",end='')
             Fpath = input()
-    plotplot(data_dict)
+    set_dict = dict()
+    if Fpath == "!S":
+        set_dict = Set_printer()
+    plotplot(data_dict, set_dict)
+    set_dict = dict()
+    data_dict = dict()
     print(":::~ Enter:")
-    print("::::::::::~ !D to Change Your Default Workd Dir")
+    print("::::::::::~ !D to Change Your Default Work Dir")
     print("::::::::::~ !S to Enter Setting Mode")
     print("::::::::::~ !A to Start Analyze Mode")
     print("::::::::::~ #X to Exit")

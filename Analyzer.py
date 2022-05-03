@@ -2,7 +2,7 @@ from itertools import islice
 import numpy as np
 global null
 null = None
-def Analyze(workdir, filename):
+def Analyze(workdir):
     f = open(workdir, 'r')
     stat_pointer = 0
     train_key = dict()
@@ -28,12 +28,12 @@ def Analyze(workdir, filename):
         else:
             stat_pointer += 1
     data_dict = dict()
-    data_dict = Input_Var(f, train_key, val_key, filename)
+    data_dict = Input_Var(f, train_key, val_key)
     f.close()
     print(":::~DATA LOADED~:::")
     return data_dict
 
-def Input_Var(f, train_key, val_key, filename):
+def Input_Var(f, train_key, val_key):
     f.seek(0,0)
     train_verse = dict()
     val_verse = dict()
@@ -202,34 +202,6 @@ def Input_Var(f, train_key, val_key, filename):
                         data_dict[i].append(line[i])
 
         key_list = data_dict.keys()
-        counts = 0
-        for i in filename:
-            if i == '.':
-                break
-            else:
-                counts += 1
-        filename = filename[0:counts]
-        counts = []
         for i in key_list:
-            if i != 'iter' and i != 'epoch':
-                counts.append(i)
-            else:
-                data_dict[i] = np.array(data_dict[i])
-        for i in counts:
-            tmp = '['+filename+']'+' '+i
-            data_dict[tmp] = data_dict.pop(i)
+            data_dict[i] = np.array(data_dict[i])
         return data_dict
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Analyze("/home/kylrzhou/Documents/ExperimentResults/a.json")
