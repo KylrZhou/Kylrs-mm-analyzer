@@ -1,11 +1,14 @@
-from Logo import Paint_Logo
+from Logo import Logo
 from Analyzer import Analyze
 from default_conf import plotplot
 from Setting_plt import Set_printer
 from os import listdir, access
 from os.path import exists
 import os
-Paint_Logo()
+def clear():
+    os.system('clear')
+clear()
+Logo()
 workdir = "/home/kylrzhou/Documents/ExperimentResults"
 homedir = '/home/kylrzhou'
 data_dict = dict()
@@ -26,6 +29,9 @@ while Fpath != "#X":
         print("Setting Mode Started")
 
     elif Fpath == "!A":
+        clear()
+        Logo()
+        print('')
         print("Input the Serial Number or Address of the JSON File to Be Analyzed")
         while Fpath != "#X" and Fpath != "!S":
             filels = listdir(workdir)
@@ -48,6 +54,9 @@ while Fpath != "#X":
                         print("Given File Does Not Accessable, Input Again:")
                         continue
                 break
+            clear()
+            Logo()
+            print('')
             counts = 0
             for i in filename:
                 if i == '.':
@@ -61,12 +70,18 @@ while Fpath != "#X":
             tmp_dict = dict()
             print("Enter Any Character to Add Data Or Use Command <#X> to Plot Selected Data Or Use Command <!S> to Set Matplotlib Attributes:  ",end='')
             Fpath = input()
+            clear()
+            Logo()
+            print('')
     set_dict = dict()
     if Fpath == "!S":
         set_dict = Set_printer()
     plotplot(data_dict, set_dict)
     set_dict = dict()
     data_dict = dict()
+    clear()
+    Logo()
+    print('')
     print(":::~ Enter:")
     print("::::::::::~ !D to Change Your Default Work Dir")
     print("::::::::::~ !S to Enter Setting Mode")

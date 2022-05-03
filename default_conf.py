@@ -2,51 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 def line_parser(a):
     parsed = dict()
-    a = a+' '
-    lstart = -1
-    lval = -1
-    lend = -1
-    fstart = -1
-    fval = -1
-    fend = -1
+    a = ' '+a+' '
+    parsed['l'] = ''
+    parsed['f'] = ''
     for i in range(len(a)):
-        if a[i] == 'l' or a[i] == 'L':
-            if a[i+1].isalpha() == False:
-                lstart = i
-                break
-    if lstart == -1 and a != '':
-        parsed['l'] = a
-        parsed['f'] = 15
-    elif lstart == -1:
-        parsed['l'] = ''
-        parsed['f'] = 15
-        return parsed
-    counts = lstart + 1
-    while a[counts].isalpha() == False:
-        counts += 1
-    lval = counts
-    counts += 1
-    while a[counts].isalpha() == True:
-        counts += 1
-    lend = counts
-    counts += 1
-    parsed['l'] = a[lval:lend]
-    for i in range(len(a)):
-        if a[i] == 'f' or a[i] == 'F':
-            if a[i+1].isalpha() == False:
-                fstart = i
-                break
-    if fstart == -1:
-        parsed['f'] = 15
-        return parsed
-    while a[counts].isdigit() == False:
-        counts += 1
-    fval = counts
-    counts += 1
-    while a[counts].isdigit() == True:
-        counts += 1
-    fend = counts
-    parsed['f'] = int(a[fval:fend])
+        if a[i].isalpha():
+            if a[i+1].isalpha() or a[i-1].isalpha():
+                parsed['l'] = parsed['l'] + a[i]
+        elif a[i].isdigit():
+            parsed['f'] = parsed['f'] + a[i]
+    parsed['f'] = int(parsed['f'])
     return parsed
 def set_analyzer(ax, set_dict):
     parsed = dict()
