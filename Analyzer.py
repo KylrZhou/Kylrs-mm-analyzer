@@ -39,16 +39,32 @@ def Input_Var(f, train_key, val_key):
     val_verse = dict()
     while True:
         print("Train:", ' ', end='')
-        for k, v in train_key.items():
-            train_verse[v] = k
-            print(k, ')', ' ', v, '    ', end='',sep='')
-        print('')
-        print("Val:", ' ', end='')
-        for k, v in val_key.items():
-            val_verse[v] = k
-            print(k, ')', ' ', v, '    ', end='',sep='')
-        print('')
-        print("Input the Key Value for Data to Process, Stop Using Command <#X> :")
+        k = list(train_key.keys())
+        for i in range(0, len(k), 4):
+            for j in range(4):
+                v = i+j
+                if v < len(k):
+                    train_verse[train_key[k[v]]] = k[v]
+                    tmp = 't' + str(v+1) + ')' + ' ' + train_key[k[v]] + '    '
+                    print('{0:<20}'.format(tmp), end='',sep='')
+                else:
+                    break
+            print('')
+            print('        ',end='')
+        print("\rVal:", '   ', end='')
+        k = list(val_key.keys())
+        for i in range(0, len(k), 4):
+            for j in range(4):
+                v = i+j
+                if v < len(k):
+                    val_verse[val_key[k[v]]] = k[v]
+                    tmp = 'v' + str(v+1) + ')' + ' ' + val_key[k[v]] + '    '
+                    print('{0:<20}'.format(tmp), end='',sep='')
+                else:
+                    break
+            print('')
+            print('        ',end='')
+        print("\rInput the Key Value for Data to Process, Stop Using Command <#X> :")
         istrue = False
         epc_itr = "epoch"
         while True:

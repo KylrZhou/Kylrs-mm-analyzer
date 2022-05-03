@@ -15,11 +15,11 @@ data_dict = dict()
 tmp_dict = dict()
 print("")
 print("<", workdir, ">")
-print(":::~ Enter:")
-print("::::::::::~ !D to Change Your Default Workd Dir")
-print("::::::::::~ !S to Enter Setting Mode")
-print("::::::::::~ !A to Start Analyze Mode")
-print("::::::::::~ #X to Exit")
+print("  Enter:")
+print("    ~ !D to Change Your Default Workd Dir")
+print("    ~ !S to Enter Setting Mode")
+print("    ~ !A to Start Analyze Mode")
+print("    ~ #X to Exit")
 Fpath = input()
 while Fpath != "#X":
     if Fpath == "!D":
@@ -35,9 +35,15 @@ while Fpath != "#X":
         print("Input the Serial Number or Address of the JSON File to Be Analyzed")
         while Fpath != "#X" and Fpath != "!S":
             filels = listdir(workdir)
-            for i in range(len(filels)):
-                print(i+1, ")", ' ', filels[i], sep = '', end = '    ')
-            print('')
+            for i in range(0,len(filels),4):
+                print("  ", sep='', end='')
+                for j in range(4):
+                    if i+j < len(filels):
+                        tmp = str(i+1) + ")" + ' ' + filels[i]
+                        print('{:<35}'.format(tmp), sep = '', end='')
+                    else:
+                        break
+                print('')
             while True:
                 Fpath = input()
                 if Fpath.isdigit():
@@ -82,9 +88,9 @@ while Fpath != "#X":
     clear()
     Logo()
     print('')
-    print(":::~ Enter:")
-    print("::::::::::~ !D to Change Your Default Work Dir")
-    print("::::::::::~ !S to Enter Setting Mode")
-    print("::::::::::~ !A to Start Analyze Mode")
-    print("::::::::::~ #X to Exit")
+    print("  Enter:")
+    print("    ~ !D to Change Your Default Work Dir")
+    print("    ~ !S to Enter Setting Mode")
+    print("    ~ !A to Start Analyze Mode")
+    print("    ~ #X to Exit")
     Fpath = input()
