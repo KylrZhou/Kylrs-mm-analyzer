@@ -1,77 +1,92 @@
 from Logo import Logo
 from Analyzer import Analyze
-from default_conf import plotplot
+from default_conf import plotplot, plottable
 from Setting_plt import Set_printer
 from os import listdir, access
 from os.path import exists
 import os
+filedir = os.path.abspath(os.path.dirname(__file__)) + '/'
 def clear():
     os.system('clear')
 def set_workdir():
-    if exists('workdir.txt'):
-        f = open('workdir.txt','w+')
+    if exists(filedir + 'workdir.txt'):
+        f = open(filedir + 'workdir.txt','r')
         workdir = f.readline()
-        f.seek(0,0)
+        f.close()
         if workdir != '':
             print("Original Workdir is <",workdir,'>',sep = '')
         else:
             print("No Default Workdir")
     else:
-        f = open('workdir.txt','w+')
         print("No Default Workdir")
     print("Input Your Workdir:")
-    print(">>> ",end = '')
+    print(">>>",end = '')
     workdir = input()
+    f = open(filedir + 'workdir.txt','w')
     if workdir != '':
-        workdir = workdir + '/'
+        if workdir[-1] == '/':
+            workdir = workdir
+        else:
+            workdir = workdir + '/'
         f.write(workdir)
-        print("Default Workdir Have Set to <",workdir,'>', sep = '')
     f.close()
     return workdir
 
 clear()
 Logo()
-#workdir = "/home/kylrzhou/Documents/ExperimentResults"
 data_dict = dict()
 tmp_dict = dict()
 print("")
 try:
-    f = open('workdir.txt','r')
+    f = open(filedir + 'workdir.txt','r')
     workdir = f.readline()
 except:
     workdir = set_workdir()
+    clear()
+    Logo()
 print("<", workdir[0:-1], ">")
 print("  Enter:")
 print("    ~ !D to Change Default Work Dir")
-print("    ~ !S to Enter Setting Mode")
 print("    ~ !A to Start Analyze Mode")
 print("    ~ #X to Exit")
+print(">>>", end = '')
 Fpath = input()
 while Fpath != "#X":
     if Fpath == "!D":
-        print("Directory Changing")
-        set_workdir()
-        continue
-    elif Fpath == "!S":
-        print("Setting Mode Started")
-
-    elif Fpath == "!A":
         clear()
         Logo()
         print('')
-        print("Input the Serial Number or Address of the JSON File to Be Analyzed")
+        set_workdir()
+        clear()
+        Logo()
+        print('')
+        print("<", workdir[0:-1], ">")
+        print("  Enter:")
+        print("    ~ !D to Change Default Work Dir")
+        print("    ~ !A to Start Analyze Mode")
+        print("    ~ #X to Exit")
+        print(">>>", end = '')
+        Fpath = input()
+        continue
+
+    elif Fpath == "!A":
         while Fpath != "#X" and Fpath != "!S":
+            clear()
+            Logo()
+            print('')
+            print("Input the Serial Number or Address of the JSON File to Be Analyzed")
             filels = listdir(workdir)
             for i in range(0,len(filels),4):
                 print("  ", sep='', end='')
                 for j in range(4):
                     if i+j < len(filels):
-                        tmp = str(i+1) + ")" + ' ' + filels[i]
+                        tmp = str(i+1+j) + ")" + ' ' + filels[i+j]
                         print('{:<35}'.format(tmp), sep = '', end='')
                     else:
                         break
                 print('')
             while True:
+                print(">>> ",end='')
                 Fpath = input()
                 if Fpath.isdigit():
                     filename = filels[int(Fpath)-1]
@@ -101,15 +116,22 @@ while Fpath != "#X":
             #data_dict = Concat(data_dict, tmp_dict)
             data_dict[filename] = tmp_dict
             tmp_dict = dict()
-            print("Enter Any Character to Add Data Or Use Command <#X> to Plot Selected Data Or Use Command <!S> to Set Matplotlib Attributes:  ",end='')
+            print("Enter Any Character to Add Data Or Use Command <#X> to Plot Selected Data Or Use Command <!S> to Set Matplotlib Attributes:  ")
+            print(">>> ",end='')
             Fpath = input()
             clear()
             Logo()
             print('')
+        else:
+            continue
     set_dict = dict()
+    plot_mode = 'C'
     if Fpath == "!S":
-        set_dict = Set_printer()
-    plotplot(data_dict, set_dict)
+        set_dict, plot_mode = Set_printer()
+    if plot_mode == 'C' or '':
+        plotplot(data_dict, set_dict)
+    elif plot_mode == 'T':
+        plottable(data_dict, set_dict)
     set_dict = dict()
     data_dict = dict()
     clear()
@@ -117,7 +139,7 @@ while Fpath != "#X":
     print('')
     print("  Enter:")
     print("    ~ !D to Change Your Default Work Dir")
-    print("    ~ !S to Enter Setting Mode")
     print("    ~ !A to Start Analyze Mode")
     print("    ~ #X to Exit")
+    print(">>>", end = '')
     Fpath = input()

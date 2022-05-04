@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 def line_parser(a):
     parsed = dict()
     a = ' '+a+' '
@@ -59,5 +60,111 @@ def plotplot(data_dict, set_dict):
                     y = data_dict[i][j][0:tmp]
                     ax.scatter(x, y, label = '['+i+']'+' '+j)
     ax.legend()
+    plt.show()
+    return
+
+def plottable(data_dict, set_dict):
+    interval = set_dict['invl']
+    f_name = dict()
+    number = 0
+    value_dict = dict()
+    for filename, sub_dict in data_dict.items():
+        value_dict[filename] = dict()
+        number += 1
+        for k, v in sub_dict.items():
+            if(k != 'epoch' and k != 'iter'):
+                f_name[filename] = k
+        for i in range(sub_dict['epoch'].size):
+            tmp = sub_dict['epoch'][i]
+            value_dict[filename][str(tmp)] = sub_dict[f_name[filename]][i]
+    max_epoch = -1
+    min_len = 10000
+    for filename, sub_dict in data_dict.items():
+        if sub_dict['epoch'].size < min_len:
+            min_len = sub_dict['epoch'].size
+    for filename, sub_dict in data_dict.items():
+        if sub_dict['epoch'][min_len-1] > max_epoch:
+            max_epoch = sub_dict['epoch'][min_len-1]
+    counts = 0
+    epoch_list = []
+    if interval == 1:
+        while True:
+            tmp = 0
+            for filename, sub_dict in data_dict.items():
+                if  sub_dict['epoch'].size > counts and sub_dict['epoch'][counts] <= max_epoch:
+                    epoch_list.append(sub_dict['epoch'][counts])
+                else:
+                    tmp = number
+                    break
+            if tmp >= number:
+                break
+            counts += interval
+    else:
+        counts = interval-1
+        while True:
+            tmp = 0
+            for filename, sub_dict in data_dict.items():
+                if  sub_dict['epoch'].size > counts and sub_dict['epoch'][counts] <= max_epoch:
+                    epoch_list.append(sub_dict['epoch'][counts])
+                else:
+                    tmp = number
+                    break
+            if tmp >= number:
+                break
+            counts += interval
+    epoch_list = list(set(epoch_list))
+    epoch_list.sort()
+    #for filename, sub_dict in data_dict.items():
+    val_mat = np.zeros(shape=(number, len(epoch_list)))
+    counts = 0
+    for i in epoch_list:
+        county = 0
+        for k, v in f_name.items():
+            try:
+                val_mat[county,counts] = value_dict[k][str(i)]
+            except:
+                county = county
+            county += 1
+        counts += 1
+    row_name = []
+    for k, v in f_name.items():
+        tmp = '['+k+']'+' '+v
+        row_name.append(tmp)
+    col_name = []
+    for i in epoch_list:
+        tmp = 'Epoch '+str(int(i))
+        col_name.append(tmp)
+    plt.figure(figsize=(40,4))
+    stp = 0
+    tmp = 0
+    counts = 15
+    col_num = val_mat.shape
+    col_num = col_num[1]
+    table_number = len(epoch_list)/15
+    table_number = math.ceil(table_number)
+    table_serial = 1
+    while stp != -1:
+        if col_num > tmp:
+            if col_num < counts:
+                counts = col_num
+                stp = -1
+            plt.subplot(table_number, 1, table_serial)
+            tab = plt.table(cellText = val_mat[:,tmp:counts-1],
+                            colLabels = col_name[tmp:counts-1],
+                            colWidths = [0.1] * (counts-tmp),
+                            rowLabels = row_name,
+                            loc = 'center',
+                            cellLoc = 'center',
+                            rowLoc = 'center')
+            tab.auto_set_font_size(False)
+            tab.set_fontsize(12)
+            plt.axis('off')
+            plt.tight_layout()
+            counts += 15
+            tmp += 15
+            table_serial += 1
+        else:
+            break
+
     plt.show()
     return
