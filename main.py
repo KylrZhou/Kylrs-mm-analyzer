@@ -91,10 +91,13 @@ while Fpath != "#X":
                 if Fpath.isdigit():
                     filename = filels[int(Fpath)-1]
                     Fpath = workdir + '/' + filels[int(Fpath)-1]
+                elif Fpath == '':
+                    print("Input Not Supported, Try Again:")
+                    continue
                 else:
                     if exists(Fpath) == False:
                         filename = Fpath
-                        Fpath = workdir + '/' + Fpath
+                        Fpath = workdir + Fpath
                         if exists(Fpath) == False:
                             print("Given File Does Not Exist, Input Again:")
                             continue

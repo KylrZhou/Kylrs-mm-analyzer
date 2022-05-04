@@ -91,10 +91,12 @@ def plottable(data_dict, set_dict):
         while True:
             tmp = 0
             for filename, sub_dict in data_dict.items():
+                #print(sub_dict['epoch'][counts])
                 if  sub_dict['epoch'].size > counts and sub_dict['epoch'][counts] <= max_epoch:
                     epoch_list.append(sub_dict['epoch'][counts])
                 else:
-                    tmp = number
+                    tmp += 1
+                if tmp >= number:
                     break
             if tmp >= number:
                 break
@@ -107,7 +109,8 @@ def plottable(data_dict, set_dict):
                 if  sub_dict['epoch'].size > counts and sub_dict['epoch'][counts] <= max_epoch:
                     epoch_list.append(sub_dict['epoch'][counts])
                 else:
-                    tmp = number
+                    tmp += 1
+                if tmp >= number:
                     break
             if tmp >= number:
                 break
@@ -134,7 +137,7 @@ def plottable(data_dict, set_dict):
     for i in epoch_list:
         tmp = 'Epoch '+str(int(i))
         col_name.append(tmp)
-    plt.figure(figsize=(40,4))
+    plt.figure(figsize=(4,4), dpi = 150)
     stp = 0
     tmp = 0
     counts = 15
@@ -149,15 +152,15 @@ def plottable(data_dict, set_dict):
                 counts = col_num
                 stp = -1
             plt.subplot(table_number, 1, table_serial)
-            tab = plt.table(cellText = val_mat[:,tmp:counts-1],
-                            colLabels = col_name[tmp:counts-1],
+            tab = plt.table(cellText = val_mat[:,tmp:counts],
+                            colLabels = col_name[tmp:counts],
                             colWidths = [0.1] * (counts-tmp),
                             rowLabels = row_name,
                             loc = 'center',
                             cellLoc = 'center',
                             rowLoc = 'center')
             tab.auto_set_font_size(False)
-            tab.set_fontsize(12)
+            tab.set_fontsize(8)
             plt.axis('off')
             plt.tight_layout()
             counts += 15
