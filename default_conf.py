@@ -12,7 +12,10 @@ def line_parser(a):
                 parsed['l'] = parsed['l'] + a[i]
         elif a[i].isdigit():
             parsed['f'] = parsed['f'] + a[i]
-    parsed['f'] = int(parsed['f'])
+    if parsed['f'] != '':
+        parsed['f'] = int(parsed['f'])
+    else:
+        parsed['f'] = 15
     return parsed
 def set_analyzer(ax, set_dict):
     parsed = dict()
@@ -137,7 +140,8 @@ def plottable(data_dict, set_dict):
     for i in epoch_list:
         tmp = 'Epoch '+str(int(i))
         col_name.append(tmp)
-    plt.figure(figsize=(4,4), dpi = 150)
+    plt.figure(figsize=(4,3))
+    plt.rcParams["figure.autolayout"] = True
     stp = 0
     tmp = 0
     counts = 15
@@ -154,13 +158,13 @@ def plottable(data_dict, set_dict):
             plt.subplot(table_number, 1, table_serial)
             tab = plt.table(cellText = val_mat[:,tmp:counts],
                             colLabels = col_name[tmp:counts],
-                            colWidths = [0.1] * (counts-tmp),
+                            #colWidths = [0.1] * (counts-tmp),
                             rowLabels = row_name,
                             loc = 'center',
                             cellLoc = 'center',
                             rowLoc = 'center')
             tab.auto_set_font_size(False)
-            tab.set_fontsize(8)
+            tab.set_fontsize(12)
             plt.axis('off')
             plt.tight_layout()
             counts += 15
